@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "rules": {
+    "auto_reject": [
+      {
+        "name": "unemployed_large_loan",
+        "condition": "employment_type == 'unemployed' and requested_loan_amount > 5000",
+        "message": "Unemployed clients cannot request loans above GHS 5,000"
+      },
+      {
+        "name": "high_dti",
+        "condition": "debt_to_income_ratio > 0.6",
+        "message": "Debt-to-income ratio exceeds 60% threshold"
+      },
+      {
+        "name": "insufficient_savings_history",
+        "condition": "savings_account_age_months < 3 and num_previous_loans == 0",
+        "message": "New clients must have at least 3 months savings history"
+      },
+      {
+        "name": "loan_exceeds_limit",
+        "condition": "requested_loan_amount > monthly_income * 24",
+        "message": "Loan amount exceeds 24x monthly income limit"
+      }
+    ],
+    "auto_approve": [
+      {
+        "name": "excellent_history",
+        "condition": "num_previous_loans >= 3 and repayment_history_score == 1.0 and requested_loan_amount < total_savings",
+        "message": "Excellent repayment history with conservative loan request"
+      }
+    ],
+    "require_guarantor": [
+      {
+        "name": "new_client_large_loan",
+        "condition": "num_previous_loans == 0 and requested_loan_amount > 10000",
+        "message": "New clients requesting above GHS 10,000 require a guarantor"
+      }
+    ],
+    "require_collateral": [
+      {
+        "name": "very_large_loan",
+        "condition": "requested_loan_amount > 50000",
+        "message": "Loans above GHS 50,000 require collateral"
+      }
+    ]
+  },
+  "thresholds": {
+    "min_credit_score": 0.5,
+    "high_confidence_threshold": 0.8,
+    "low_confidence_threshold": 0.3
+  }
+}
