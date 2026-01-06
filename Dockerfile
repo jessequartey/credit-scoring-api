@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Set PYTHONPATH so Python can find the app module
+ENV PYTHONPATH=/app
+
 # Generate training data and train model during build
 RUN python ml/generate_training_data.py && \
     python ml/train_model.py && \
