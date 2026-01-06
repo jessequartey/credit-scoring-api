@@ -15,16 +15,28 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create non-root user
-RUN useradd -m appuser && chown -R appuser:appuser /app
+# Generate training data and train model during build
+RUN python ml/generate_training_data.py && \
+    python ml/train_model.py && \
+    echo "Model trained successfully" && \
+    ls -lh ml/models/
+
+# Create necessary directories
+RUN mkdir -p ml/models data config
+
+# Create non-root user and set permissions
+RUN useradd -m appuser && \
+    chown -R appuser:appuser /app && \
+    chmod +x entrypoint.sh
+
 USER appuser
 
 # Expose port
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]
