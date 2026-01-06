@@ -14,6 +14,10 @@ class RuleEngine:
         
         with open(self.config_path, 'r') as f:
             return json.load(f)
+
+    def reload(self):
+        """Reloads the configuration from disk."""
+        self.config = self.load_config()
     
     def evaluate_condition(self, condition: str, features: Dict[str, Any]) -> bool:
         """

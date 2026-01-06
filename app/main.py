@@ -50,6 +50,9 @@ async def update_rules(config: RulesConfig, x_admin_api_key: str = Header(...)):
     with open(settings.RULES_CONFIG_PATH, 'w') as f:
         json.dump(config.dict(), f, indent=2)
     
+    # Reload the rule engine in memory
+    credit.rule_engine.reload()
+    
     return {"message": "Rules updated successfully"}
 
 if __name__ == "__main__":
